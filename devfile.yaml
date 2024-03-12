@@ -1,22 +1,25 @@
 schemaVersion: 2.2.0
 metadata:
-  name: python-teste
-  projectType: Python-Teste
-  displayName: Python-Teste
-  icon: https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/python.svg
-  description:
-    'Deployment test'
-  language: Python
-  version: 1.0
-  provider: Docker Hub
+  name: jupyterlab
+  displayName: Jupyter LAB
+  description: 'Jupyter LAB enviroment.'
+  icon: https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/golang.svg
+  language: python
+  projectType: python
   tags:
-    - Python
-    - Pip
-    - Pandas
+    - python
+  version: 1.1.0
+  provider: Red Hat
+  supportUrl: https://github.com/devfile-samples/devfile-support#support-information
+  attributes:
+    alpha.dockerimage-port: 8080
+parent:
+  id: python
+  registryUrl: 'https://registry.devfile.io'
 components:
   - name: image-build
     image:
-      imageName: python:3
+      imageName: pyspark-notebook:latest
       dockerfile:
         uri: docker/Dockerfile
         buildContext: .
@@ -24,10 +27,14 @@ components:
   - name: kubernetes-deploy
     attributes:
       deployment/replicas: 1
-      deployment/cpuRequest: 10m
-      deployment/memoryRequest: 50Mi
+      deployment/container-port: 8080
     kubernetes:
       uri: deploy.yaml
+      endpoints:
+      - name: http-8080
+        targetPort: 8080
+        path: /
+        secure: true
 commands:
   - id: build-image
     apply:
