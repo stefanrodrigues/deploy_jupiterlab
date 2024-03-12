@@ -19,7 +19,7 @@ parent:
 components:
   - name: image-build
     image:
-      imageName: pyspark-notebook:latest
+      imageName: pyspark-notebook
       dockerfile:
         uri: docker/Dockerfile
         buildContext: .
