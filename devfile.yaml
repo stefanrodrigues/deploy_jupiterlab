@@ -1,0 +1,45 @@
+schemaVersion: 2.2.0
+metadata:
+  name: python-teste
+  projectType: Python-Teste
+  displayName: Python-Teste
+  icon: https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/python.svg
+  description:
+    'Deployment test'
+  language: Python
+  version: 1.0
+  provider: Docker Hub
+  tags:
+    - Python
+    - Pip
+    - Pandas
+components:
+  - name: image-build
+    image:
+      imageName: python:3
+      dockerfile:
+        uri: docker/Dockerfile
+        buildContext: .
+        rootRequired: false
+  - name: kubernetes-deploy
+    attributes:
+      deployment/replicas: 1
+      deployment/cpuRequest: 10m
+      deployment/memoryRequest: 50Mi
+    kubernetes:
+      uri: deploy.yaml
+commands:
+  - id: build-image
+    apply:
+      component: image-build
+  - id: deployk8s
+    apply:
+      component: kubernetes-deploy
+  - id: deploy
+    composite:
+      commands:
+        - build-image
+        - deployk8s
+      group:
+        kind: deploy
+        isDefault: true
