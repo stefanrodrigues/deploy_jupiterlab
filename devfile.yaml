@@ -12,7 +12,7 @@ metadata:
   provider: Red Hat
   supportUrl: https://github.com/devfile-samples/devfile-support#support-information
   attributes:
-    alpha.dockerimage-port: 8080
+    alpha.dockerimage-port: 8888
 parent:
   id: python
   registryUrl: 'https://registry.devfile.io'
@@ -27,12 +27,12 @@ components:
   - name: kubernetes-deploy
     attributes:
       deployment/replicas: 1
-      deployment/container-port: 8080
+      deployment/container-port: 8888
     kubernetes:
       uri: deploy.yaml
       endpoints:
-      - name: http-8080
-        targetPort: 8080
+      - name: http-8888
+        targetPort: 8888
         path: /
         secure: true
 commands:
