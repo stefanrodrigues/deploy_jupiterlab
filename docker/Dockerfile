@@ -5,5 +5,5 @@ EXPOSE 8888/tcp
 EXPOSE 4040/tcp
 EXPOSE 4041/tcp
 
-RUN chgrp -R 0 /home/jovyan/notebooks && \
-    chmod -R g=u /home/jovyan/notebooks
+RUN chgrp -R 0 /home/jovyan && \
+    chmod -R g=u /home/jovyan
