@@ -8,5 +8,6 @@ EXPOSE 8888/tcp
 EXPOSE 4040/tcp
 EXPOSE 4041/tcp
 
+# Teste RUN
 RUN chgrp -R 0 /home/jovyan && \
     chmod -R g=u /home/jovyan
