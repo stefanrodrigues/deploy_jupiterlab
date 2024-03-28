@@ -41,3 +41,11 @@ commands:
       group:
         kind: run
         isDefault: true
+  - id: deploy
+    composite:
+      commands:
+        - pip-install-requirements
+        - run-app
+      group:
+        kind: deploy
+        isDefault: true
