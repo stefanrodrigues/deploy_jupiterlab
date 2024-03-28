@@ -1,13 +1,11 @@
-FROM quay.io/jupyter/pyspark-notebook
+FROM registry.access.redhat.com/ubi9/python-39:1-172
 
-ENV CHOWN_HOME=yes
-ENV CHOWN_HOME_OPTS='-R'
+COPY requirements.txt ./
 
-# By default, listen on port 8081
-EXPOSE 8888/tcp
-EXPOSE 4040/tcp
-EXPOSE 4041/tcp
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r ./requirements.txt
 
-# Teste RUN
-RUN chgrp -R 0 /home/jovyan && \
-    chmod -R g=u /home/jovyan
+#Port Expose
+EXPOSE 8888
+
+CMD [ "jupyter","lab","--ip=0.0.0.0" ]
