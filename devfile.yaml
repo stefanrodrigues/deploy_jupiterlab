@@ -1,52 +1,56 @@
-schemaVersion: 2.2.0
-metadata:
-  name: jupyterlab
-  displayName: Jupyter LAB
-  description: 'Jupyter LAB enviroment.'
-  icon: https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/golang.svg
-  language: python
-  projectType: python
-  tags:
-    - python
-  version: 1.1.0
-  provider: Red Hat
-  supportUrl: https://github.com/devfile-samples/devfile-support#support-information
-  attributes:
-    alpha.dockerimage-port: 8888
-parent:
-  id: python
-  registryUrl: 'https://registry.devfile.io'
-components:
-  - name: image-build
-    image:
-      imageName: pyspark-notebook
-      dockerfile:
-        uri: docker/Dockerfile
-        buildContext: .
-        rootRequired: true
-  - name: kubernetes-deploy
-    attributes:
-      deployment/replicas: 1
-      deployment/container-port: 8888
-    kubernetes:
-      uri: deploy.yaml
-      endpoints:
-      - name: http-8888
-        targetPort: 8888
-        path: /
-        secure: true
-commands:
-  - id: build-image
-    apply:
-      component: image-build
-  - id: deployk8s
-    apply:
-      component: kubernetes-deploy
-  - id: deploy
-    composite:
-      commands:
-        - build-image
-        - deployk8s
-      group:
-        kind: deploy
-        isDefault: true
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Deployment
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+      template:
+        metadata:
+          name: postgres
+          app:
+            name: postgres
+        spec:
+          containers:
+            - image: postgres
+              name: postgres
+              ports:
+                - name: postgres
+                  containerPort: 5432
+                  volumeMounts:
+                    - name: pg-storage
+                      mountPath: /var/lib/postgresql/data
+          volumes:
+            - name: pg-storage
+              persistentVolumeClaim:
+                claimName: pg-storage
+---
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+        name: postgres
+    spec:
+      ports:
+        - port: 5432
+          targetPort: 5432
+      selector:
+        app: postgres
+---
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: pg-storage
+      labels:
+        app: postgres
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
